@@ -1,13 +1,20 @@
 import os
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from flask_migrate import Migrate
 import json
+
+app = Flask(__name__)
+'''app.config.from_object('config')'''
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 DB_USER = os.getenv('DB_USER', 'postgres')
 DB_PASSWORD = os.getenv('DB_PASSWORD', 'password')
 DB_HOST = os.getenv('DB_HOST', 'localhost:5432') 
-database_name = "trivia"
-database_path = "postgres://{}:{}@{}/{}".format(DB_USER, DB_PASSWORD, DB_HOST, database_name)
+database_name = "casting"
+database_path = "postgresql://{}:{}@{}/{}".format(DB_USER, DB_PASSWORD, DB_HOST, database_name)
 
 db = SQLAlchemy()
 '''
