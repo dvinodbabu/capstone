@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
+from auth.auth import AuthError, requires_auth
+
 
 def create_app(test_config=None):
     """ 
@@ -23,7 +25,8 @@ def create_app(test_config=None):
         return "hi"
 
     @app.route('/artists', methods=['GET'])
-    def artists():
+    @requires_auth('get:artist')
+    def artists(jwt):
         artists = Artist.query.all()
         if not artists:
             abort(404)
@@ -34,7 +37,8 @@ def create_app(test_config=None):
 
 
     @app.route('/movies', methods=["GET"])
-    def movies():
+    @requires_auth('get:movies')
+    def movies(jwt):
         movies = Movie.query.all()
         if not movies:
             abort(404)
@@ -45,7 +49,8 @@ def create_app(test_config=None):
 
 
     @app.route('/artists', methods=["POST"])
-    def new_artist():
+    @requires_auth('post:artist')
+    def new_artist(jwt):
         try:
             body = request.get_json()
             print(body)
@@ -64,7 +69,8 @@ def create_app(test_config=None):
 
 
     @app.route('/movies', methods=["POST"])
-    def new_movie():
+    @requires_auth('post:movies')
+    def new_movie(jwt):
         try:
             body = request.get_json()
             movie = Movie(title=body.get("title", None),
@@ -79,7 +85,8 @@ def create_app(test_config=None):
             abort(422)
 
     @app.route("/artists/<int:artist_id>", methods=["DELETE"])
-    def delete_artist(artist_id):
+    @requires_auth('delete:artist')
+    def delete_artist(jwt, artist_id):
         try:
             artist = Artist.query.filter(
                 Artist.id == artist_id).one_or_none()
@@ -95,7 +102,8 @@ def create_app(test_config=None):
 
 
     @app.route("/movies/<int:movie_id>", methods=["DELETE"])
-    def delete_movie(movie_id):
+    @requires_auth('delete:movies')
+    def delete_movie(jwt, movie_id):
         try:
             movie = Movie.query.filter(
                 Movie.id == movie_id).one_or_none()
@@ -110,7 +118,8 @@ def create_app(test_config=None):
             abort(422)
             
     @app.route("/artists/<int:artist_id>", methods=["PATCH"])
-    def patch_artist(artist_id):
+    @requires_auth('patch:artist')
+    def patch_artist(jwt, artist_id):
         try:
             artist = Artist.query.filter(Artist.id == artist_id).one_or_none()
             if artist is None:
