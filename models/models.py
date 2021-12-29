@@ -14,7 +14,7 @@ DB_USER = os.getenv('DB_USER', 'postgres')
 DB_PASSWORD = os.getenv('DB_PASSWORD', 'password')
 DB_HOST = os.getenv('DB_HOST', 'localhost:5432') 
 database_name = "casting"
-database_path = os.getenv('DATABASE_URL')
+database_path = os.getenv('DATABASE_URL_HEROKU')
 
 db = SQLAlchemy()
 '''
