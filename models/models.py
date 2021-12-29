@@ -60,7 +60,7 @@ class Artist(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def get_formatted_json(self):
+    def get_json(self):
         return({
             "id": self.id,
             "name": self.name,
@@ -87,10 +87,11 @@ class Movie(db.Model):
         db.session.commit()
 
     def delete(self):
+        print(123)
         db.session.delete(self)
         db.session.commit()
 
-    def get_formatted_json(self):
+    def get_json(self):
         return({
             "id": self.id,
             "title": self.title,

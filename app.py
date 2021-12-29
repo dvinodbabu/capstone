@@ -32,7 +32,7 @@ def create_app(test_config=None):
             abort(404)
         return jsonify({
             'success': True,
-            'actors': [artist.get_formatted_json() for artist in artists]
+            'actors': [artist.get_json() for artist in artists]
         }), 200
 
 
@@ -44,7 +44,7 @@ def create_app(test_config=None):
             abort(404)
         return jsonify({
             'success': True,
-            'actors': [movie.get_formatted_json() for movie in movies]
+            'movies': [movie.get_json() for movie in movies]
         }), 200
 
 
@@ -53,8 +53,6 @@ def create_app(test_config=None):
     def new_artist(jwt):
         try:
             body = request.get_json()
-            print(body)
-            print(body.get("name", None))
             artist = Artist(name=body.get("name", None),
                             age=body.get("age", None),
                             gender=body.get("gender", None),
@@ -74,7 +72,7 @@ def create_app(test_config=None):
         try:
             body = request.get_json()
             movie = Movie(title=body.get("title", None),
-                        genre=body.get("age", None),
+                        genre=body.get("genre", None),
                         release_date=body.get("release_date", None))
             Movie.insert(movie)
             return jsonify({
@@ -84,37 +82,37 @@ def create_app(test_config=None):
             print(repr(e))
             abort(422)
 
-    @app.route("/artists/<int:artist_id>", methods=["DELETE"])
+    @app.route('/artists/<int:id>', methods=['DELETE'])
     @requires_auth('delete:artist')
-    def delete_artist(jwt, artist_id):
+    def delete_artist(jwt, id):
         try:
-            artist = Artist.query.filter(
-                Artist.id == artist_id).one_or_none()
-            if question is None:
+            artist = Artist.query.get(id)
+            if artist is None:
                 abort(404)
-            artist.delete()
+            Artist.delete(artist)
             return jsonify({
                 'success' : True,
-                'deleted' : Artist.id
+                'deleted' : id
             })
         except Exception as e:
+            print(repr(e))
             abort(422)
 
 
-    @app.route("/movies/<int:movie_id>", methods=["DELETE"])
+    @app.route('/movies/<int:id>', methods=['DELETE'])
     @requires_auth('delete:movies')
-    def delete_movie(jwt, movie_id):
+    def delete_movie(jwt, id):
         try:
-            movie = Movie.query.filter(
-                Movie.id == movie_id).one_or_none()
-            if question is None:
+            movie = Movie.query.get(id)
+            if movie is None:
                 abort(404)
-            artist.delete()
+            Movie.delete(movie)
             return jsonify({
                 'success' : True,
-                'deleted' : Movie.id
+                'deleted' : id
             })
         except Exception as e:
+            print(repr(e))
             abort(422)
             
     @app.route("/artists/<int:artist_id>", methods=["PATCH"])
@@ -149,7 +147,7 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers',
                              'Content-Type, Authorization')
         response.headers.add('Access-Control-Allow-Methods',
-                             'GET, POST, PATCH, DELETE, OPTION')
+                             'GET, POST, PATCH, DELETE, OPTIONS')
         return response
     
     @app.errorhandler(500)

@@ -70,7 +70,6 @@ def check_permissions(permission, payload):
 def verify_decode_jwt(token):
     '''Method to decode the JWT token
     '''
-    print(AUTH0_DOMAIN)
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     unverified_header = jwt.get_unverified_header(token)
