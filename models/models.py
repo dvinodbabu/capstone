@@ -8,7 +8,7 @@ import json
 app = Flask(__name__)
 '''app.config.from_object('config')'''
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+
 
 DB_USER = os.getenv('DB_USER', 'postgres')
 DB_PASSWORD = os.getenv('DB_PASSWORD', 'password')
@@ -31,7 +31,15 @@ def setup_db(app, database_path=database_path):
 def clean_start():
     db.drop_all()
     db.create_all()
+
+'''
+def setup_data():
+    Artist(name="Liam Neeson", age="40", gender="male", phone="11122233344").insert()
+    Artist(name="Madonna", age="40", gender="female", phone="4433221122").insert()
     
+    Movie(title="Titanic", genre="drama", release_date='2020/01/01').insert()
+    Movie(title="Avatar", genre="fantasy", release_date='2021/01/01').insert()
+''' 
 
 class Artist(db.Model):
     __tablename__='Artist'

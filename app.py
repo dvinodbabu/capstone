@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 import sys
-from models.models import Artist, Movie,setup_db
+from models.models import Artist, Movie, setup_db
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_migrate import Migrate
@@ -20,9 +20,9 @@ def create_app(test_config=None):
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 
-    @app.route('/hi')
-    def sayhi():
-        return "hi"
+    @app.route('/testdata')
+    def setuptestdata():
+        setup_data()
 
     @app.route('/artists', methods=['GET'])
     @requires_auth('get:artist')

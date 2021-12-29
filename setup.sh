@@ -1,0 +1,10 @@
+export DB_USER=postgres
+export DB_PASSWORD=password
+export DB_HOST=localhost:5432
+export AUTH0_CLIENT_ID=vlViuA63Vez7RG7Yzz3MG9dxYgEliiZ7
+export AUTH0_DOMAIN=dev-j5-9ahca.us.auth0.com
+export API_AUDIENCE=casting
+export ENV=development
+export ALGORITHMS=['RS256']
+export FLASK_APP=app
+export FLASK_DEBUG=True
