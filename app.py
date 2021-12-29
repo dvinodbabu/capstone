@@ -20,9 +20,9 @@ def create_app(test_config=None):
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 
-    @app.route('/testdata')
-    def setuptestdata():
-        setup_data()
+    @app.route('/hi')
+    def hi():
+        return "hi"
 
     @app.route('/artists', methods=['GET'])
     @requires_auth('get:artist')
