@@ -10,7 +10,7 @@ from auth.auth import AuthError, requires_auth
 
 
 def create_app(test_config=None):
-    """ 
+    """
     create app method, sets the db and CORS related configuration
     Args:
     Returns:
@@ -18,7 +18,6 @@ def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-
 
     @app.route('/hi')
     def hi():
@@ -35,7 +34,6 @@ def create_app(test_config=None):
             'actors': [artist.get_json() for artist in artists]
         }), 200
 
-
     @app.route('/movies', methods=["GET"])
     @requires_auth('get:movies')
     def movies(jwt):
@@ -46,7 +44,6 @@ def create_app(test_config=None):
             'success': True,
             'movies': [movie.get_json() for movie in movies]
         }), 200
-
 
     @app.route('/artists', methods=["POST"])
     @requires_auth('post:artist')
@@ -65,15 +62,14 @@ def create_app(test_config=None):
             print(repr(e))
             abort(422)
 
-
     @app.route('/movies', methods=["POST"])
     @requires_auth('post:movies')
     def new_movie(jwt):
         try:
             body = request.get_json()
             movie = Movie(title=body.get("title", None),
-                        genre=body.get("genre", None),
-                        release_date=body.get("release_date", None))
+                          genre=body.get("genre", None),
+                          release_date=body.get("release_date", None))
             Movie.insert(movie)
             return jsonify({
                 "success": True
@@ -91,13 +87,12 @@ def create_app(test_config=None):
                 abort(404)
             Artist.delete(artist)
             return jsonify({
-                'success' : True,
-                'deleted' : id
+                'success': True,
+                'deleted': id
             })
         except Exception as e:
             print(repr(e))
             abort(422)
-
 
     @app.route('/movies/<int:id>', methods=['DELETE'])
     @requires_auth('delete:movies')
@@ -108,13 +103,13 @@ def create_app(test_config=None):
                 abort(404)
             Movie.delete(movie)
             return jsonify({
-                'success' : True,
-                'deleted' : id
+                'success': True,
+                'deleted': id
             })
         except Exception as e:
             print(repr(e))
             abort(422)
-            
+
     @app.route("/artists/<int:artist_id>", methods=["PATCH"])
     @requires_auth('patch:artist')
     def patch_artist(jwt, artist_id):
@@ -133,7 +128,7 @@ def create_app(test_config=None):
         except Exception as e:
             print(repr(e))
             abort(422)
-     
+
     @app.after_request
     def after_request(response):
         """
@@ -149,7 +144,7 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Methods',
                              'GET, POST, PATCH, DELETE, OPTIONS')
         return response
-    
+
     @app.errorhandler(500)
     def not_found(error):
         return jsonify({
@@ -157,7 +152,7 @@ def create_app(test_config=None):
             "error": 500,
             "message": "Server Error"
         }), 500
-        
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
@@ -183,7 +178,7 @@ def create_app(test_config=None):
         }), 400
 
     return app
-    
+
 APP = create_app()
 
 if __name__ == '__main__':

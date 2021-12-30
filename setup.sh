@@ -1,6 +1,4 @@
-export DB_USER=postgres
-export DB_PASSWORD=password
-export DB_HOST=localhost:5432
+export DATABASE_URL_HEROKU=
 export AUTH0_CLIENT_ID=vlViuA63Vez7RG7Yzz3MG9dxYgEliiZ7
 export AUTH0_DOMAIN=dev-j5-9ahca.us.auth0.com
 export API_AUDIENCE=casting
