@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
-from auth.auth import AuthError, requires_auth, logout
+from auth.auth import AuthError, requires_auth, log_out
 
 
 def create_app(test_config=None):
@@ -25,7 +25,7 @@ def create_app(test_config=None):
     
     @app.route('/logout')
     def logout():
-        logout()
+        log_out()
     
     @app.route('/artists', methods=['GET'])
     @requires_auth('get:artist')
@@ -180,6 +180,14 @@ def create_app(test_config=None):
             "error": 400,
             "message": "bad request"
         }), 400
+        
+    @app.errorhandler(AuthError)
+    def server_error(error):
+        return jsonify({
+            "success": False,
+            "error": error.status_code,
+            "message": error.error
+        }), error.status_code
 
     return app
 

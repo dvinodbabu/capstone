@@ -50,7 +50,7 @@ class Artist(db.Model):
         })
 
     def __repr__(self):
-        return f'Actor: {self.id}, {self.name}'
+        return f'Artist: {self.id}, {self.name}'
 
 
 class Movie(db.Model):

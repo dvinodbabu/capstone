@@ -56,7 +56,14 @@ class CapstoneTestCase(unittest.TestCase):
             self.assertTrue(data['success'])
             self.assertNotEqual(len(data['movies']), 0)
             
-
+    def test_delete_a_movie_by_assistant(self):
+        res = self.client().delete('/movies/1',
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.casting_assistant)
+                                })    
+        print(res.status_code)
+        self.assertEqual(401, res.status_code)    
 
 if __name__ == "__main__":
     unittest.main()
