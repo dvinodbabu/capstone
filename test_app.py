@@ -62,8 +62,105 @@ class CapstoneTestCase(unittest.TestCase):
                                     "Authorization": "Bearer {}"
                                     .format(self.casting_assistant)
                                 })    
+        self.assertEqual(401, res.status_code)
+    
+    def test_delete_a_movie_by_director(self):
+        res = self.client().delete('/movies/1',
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.casting_director)
+                                })    
+        self.assertEqual(401, res.status_code)
+        
+    def test_post_a_movie_by_director(self):
+        movie = {
+            "title": "Captain America",
+            "release_date": "2020-03-02",
+            "genre": "SuperHero"
+        }
+        res = self.client().post('/movies',
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.casting_director)
+                                },json=movie)
+        data = json.loads(res.data)
         print(res.status_code)
-        self.assertEqual(401, res.status_code)    
-
+        self.assertEqual(401, res.status_code)
+        
+    def test_post_a_artist_by_director(self):
+        artist = {
+            "name": "Will Smith",
+            "age": "45",
+            "gender": "male",
+            "phone": "871869523"
+        }
+        res = self.client().post('/artists',
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.casting_director)
+                                },json=artist)
+        data = json.loads(res.data)
+        print(data)
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+    
+    def test_patch_a_movie_by_producer(self):
+        artist = {
+            "name": "Jaden Smith",
+            "age": "45",
+            "gender": "male",
+            "phone": "871869523"
+        }
+        artist = Artist.query.filter_by(name='Will Smith').first()
+        res = self.client().patch('/artists/'+str(artist.id),
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.executive_producer)
+                                },json=artist)
+        
+        data = json.loads(res.data)
+        print(data)
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+        
+    def test_delete_a_artist_by_director(self):
+        artist = Artist.query.filter_by(name='Will Smith').first()
+        res = self.client().delete('/artists/'+str(artist.id),
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.casting_director)
+                                })
+        print(res.status_code)
+        self.assertEqual(res.status_code, 200)
+    
+    def test_post_a_movie_by_producer(self):
+        movie = {
+            "title": "Captain America",
+            "release_date": "2020-03-02",
+            "genre": "SuperHero"
+        }
+        res = self.client().post('/movies',
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.executive_producer)
+                                },json=movie)
+        
+        data = json.loads(res.data)
+        print(data)
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+     
+    def test_delete_a_movie_by_producer(self):
+        movie = Movie.query.filter_by(title='Captain America').first()
+        res = self.client().delete('/movies/'+str(movie.id),
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.executive_producer)
+                                })    
+        print(res.status_code)
+        self.assertEqual(res.status_code, 200)
+    
+    
+    
 if __name__ == "__main__":
     unittest.main()
