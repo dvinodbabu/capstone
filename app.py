@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
-from auth.auth import AuthError, requires_auth
+from auth.auth import AuthError, requires_auth, logout
 
 
 def create_app(test_config=None):
@@ -19,10 +19,14 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-    @app.route('/hi')
+    @app.route('/')
     def hi():
-        return "hi"
-
+        return "you are rerouted from auth0"
+    
+    @app.route('/logout')
+    def logout():
+        logout()
+    
     @app.route('/artists', methods=['GET'])
     @requires_auth('get:artist')
     def artists(jwt):
@@ -31,7 +35,7 @@ def create_app(test_config=None):
             abort(404)
         return jsonify({
             'success': True,
-            'actors': [artist.get_json() for artist in artists]
+            'artists': [artist.get_json() for artist in artists]
         }), 200
 
     @app.route('/movies', methods=["GET"])
@@ -179,7 +183,7 @@ def create_app(test_config=None):
 
     return app
 
-APP = create_app()
+app = create_app()
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
