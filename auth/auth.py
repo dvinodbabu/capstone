@@ -20,10 +20,6 @@ class AuthError(Exception):
         self.status_code = status_code
 
 
-def log_out():
-    urlopen(f'https://{AUTH0_DOMAIN}/logout')
-    return "logged out"
-
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """

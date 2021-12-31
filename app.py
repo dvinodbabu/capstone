@@ -1,13 +1,15 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, redirect
 from flask_cors import CORS
 import sys
+import os
 from models.models import Artist, Movie, setup_db
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
-from auth.auth import AuthError, requires_auth, log_out
+from auth.auth import AuthError, requires_auth
 
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
 
 def create_app(test_config=None):
     """
@@ -25,7 +27,7 @@ def create_app(test_config=None):
     
     @app.route('/logout')
     def logout():
-        log_out()
+        return redirect(f'https://{AUTH0_DOMAIN}/logout')
     
     @app.route('/artists', methods=['GET'])
     @requires_auth('get:artist')
