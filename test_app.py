@@ -5,6 +5,17 @@ from flask_sqlalchemy import SQLAlchemy
 from app import app
 from models.models import Artist, Movie, setup_db
 
+'''
+PERMISSION          ASSISTANT           DIRECTOR            PRODUCER 
+----------------------------------------------------------------------   
+get:artist              *                   *                   *
+get:movies              *                   *                   *
+post:artist                                 *                   *
+post:movies                                                     *
+delete:artist                               *                   *
+delete:movies                                                   *
+patch:artist                                *                   * 
+'''
 
 TEST_DATABASE_URI = os.getenv('DATABASE_URL_TEST')
 ASSISTANT_TOKEN = os.getenv('ASSISTANT_TOKEN')
