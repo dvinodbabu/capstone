@@ -100,10 +100,10 @@ class CapstoneTestCase(unittest.TestCase):
         
     def test_post_a_artist_by_director(self):
         artist = {
-            "name": "Will Smith",
+            "name": "Brendan Fraser",
             "age": "45",
             "gender": "male",
-            "phone": "871869523"
+            "phone": "871869522"
         }
         res = self.client().post('/artists',
                                 headers={
@@ -116,18 +116,29 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
     
     def test_patch_a_movie_by_producer(self):
-        artist = {
+        new_artist = {
             "name": "Jaden Smith",
-            "age": "45",
+            "age": "20",
             "gender": "male",
             "phone": "871869523"
         }
-        artist = Artist.query.filter_by(name='Will Smith').first()
+        update_artist = {
+            "name": "Will Smith",
+            "age": "45",
+            "gender": "male",
+            "phone": "871869524"
+        }
+        self.client().post('/artists',
+                                headers={
+                                    "Authorization": "Bearer {}"
+                                    .format(self.casting_director)
+                                },json=new_artist)
+        artist = Artist.query.filter_by(name='Jaden Smith').first()
         res = self.client().patch('/artists/'+str(artist.id),
                                 headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.executive_producer)
-                                },json=artist)
+                                },json=update_artist)
         
         data = json.loads(res.data)
         print(data)

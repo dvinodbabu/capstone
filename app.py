@@ -23,7 +23,7 @@ def create_app(test_config=None):
 
     @app.route('/')
     def hi():
-        return "you are rerouted from auth0"
+        return "you are rerouted from auth0 copy the access token from the url"
     
     @app.route('/logout')
     def logout():
