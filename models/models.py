@@ -8,6 +8,7 @@ db = SQLAlchemy()
 
 DATABASE_URI = os.getenv('DATABASE_URL_HEROKU')
 
+
 def setup_db(app, database_path=DATABASE_URI):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

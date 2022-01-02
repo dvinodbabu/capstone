@@ -6,15 +6,16 @@ from app import app
 from models.models import Artist, Movie, setup_db
 
 '''
-PERMISSION          ASSISTANT           DIRECTOR            PRODUCER 
-----------------------------------------------------------------------   
+ROLE CHART TO UNDERSTAND THE TEST OUTCOME
+PERMISSION          ASSISTANT           DIRECTOR            PRODUCER
+----------------------------------------------------------------------
 get:artist              *                   *                   *
 get:movies              *                   *                   *
 post:artist                                 *                   *
 post:movies                                                     *
 delete:artist                               *                   *
 delete:movies                                                   *
-patch:artist                                *                   * 
+patch:artist                                *                   *
 '''
 
 TEST_DATABASE_URI = os.getenv('DATABASE_URL_TEST')
@@ -24,7 +25,7 @@ PRODUCER_TOKEN = os.getenv('PRODUCER_TOKEN')
 
 
 class CapstoneTestCase(unittest.TestCase):
-    
+
     def setUp(self):
         self.app = app
         self.client = self.app.test_client
@@ -35,14 +36,11 @@ class CapstoneTestCase(unittest.TestCase):
         with self.app.app_context():
             self.db = SQLAlchemy()
             self.db.init_app(self.app)
-            # create all tables
-            #create_and_drop_all()
-            # self.db.create_all()
 
     def tearDown(self):
         """Executed after reach test"""
         pass
-        
+
     def test_get_all_artist(self):
         res = self.client().get('/artists',
                                 headers={
@@ -66,23 +64,23 @@ class CapstoneTestCase(unittest.TestCase):
         if res.status_code == 200:
             self.assertTrue(data['success'])
             self.assertNotEqual(len(data['movies']), 0)
-            
+
     def test_delete_a_movie_by_assistant(self):
         res = self.client().delete('/movies/1',
-                                headers={
-                                    "Authorization": "Bearer {}"
-                                    .format(self.casting_assistant)
-                                })    
+                                   headers={
+                                        "Authorization": "Bearer {}"
+                                        .format(self.casting_assistant)
+                                   })
         self.assertEqual(401, res.status_code)
-    
+
     def test_delete_a_movie_by_director(self):
         res = self.client().delete('/movies/1',
-                                headers={
-                                    "Authorization": "Bearer {}"
-                                    .format(self.casting_director)
-                                })    
+                                   headers={
+                                        "Authorization": "Bearer {}"
+                                        .format(self.casting_director)
+                                   })
         self.assertEqual(401, res.status_code)
-        
+
     def test_post_a_movie_by_director(self):
         movie = {
             "title": "Captain America",
@@ -90,14 +88,14 @@ class CapstoneTestCase(unittest.TestCase):
             "genre": "SuperHero"
         }
         res = self.client().post('/movies',
-                                headers={
+                                 headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.casting_director)
-                                },json=movie)
+                                 }, json=movie)
         data = json.loads(res.data)
         print(res.status_code)
         self.assertEqual(401, res.status_code)
-        
+
     def test_post_a_artist_by_director(self):
         artist = {
             "name": "Brendan Fraser",
@@ -106,15 +104,15 @@ class CapstoneTestCase(unittest.TestCase):
             "phone": "871869522"
         }
         res = self.client().post('/artists',
-                                headers={
+                                 headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.casting_director)
-                                },json=artist)
+                                 }, json=artist)
         data = json.loads(res.data)
         print(data)
         self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
-    
+
     def test_patch_a_movie_by_producer(self):
         new_artist = {
             "name": "Jaden Smith",
@@ -129,32 +127,32 @@ class CapstoneTestCase(unittest.TestCase):
             "phone": "871869524"
         }
         self.client().post('/artists',
-                                headers={
+                           headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.casting_director)
-                                },json=new_artist)
+                           }, json=new_artist)
         artist = Artist.query.filter_by(name='Jaden Smith').first()
         res = self.client().patch('/artists/'+str(artist.id),
-                                headers={
+                                  headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.executive_producer)
-                                },json=update_artist)
-        
+                                  }, json=update_artist)
+
         data = json.loads(res.data)
         print(data)
         self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
-        
+
     def test_delete_a_artist_by_director(self):
         artist = Artist.query.filter_by(name='Will Smith').first()
         res = self.client().delete('/artists/'+str(artist.id),
-                                headers={
+                                   headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.casting_director)
-                                })
+                                  })
         print(res.status_code)
         self.assertEqual(res.status_code, 200)
-    
+
     def test_post_a_movie_by_producer(self):
         movie = {
             "title": "Captain America",
@@ -162,27 +160,25 @@ class CapstoneTestCase(unittest.TestCase):
             "genre": "SuperHero"
         }
         res = self.client().post('/movies',
-                                headers={
+                                 headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.executive_producer)
-                                },json=movie)
-        
+                                 }, json=movie)
+
         data = json.loads(res.data)
         print(data)
         self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
-     
+
     def test_delete_a_movie_by_producer(self):
         movie = Movie.query.filter_by(title='Captain America').first()
         res = self.client().delete('/movies/'+str(movie.id),
-                                headers={
+                                   headers={
                                     "Authorization": "Bearer {}"
                                     .format(self.executive_producer)
-                                })    
+                                   })
         print(res.status_code)
         self.assertEqual(res.status_code, 200)
-    
-    
-    
+
 if __name__ == "__main__":
     unittest.main()

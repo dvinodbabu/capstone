@@ -11,6 +11,7 @@ from auth.auth import AuthError, requires_auth
 
 AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
 
+
 def create_app(test_config=None):
     """
     create app method, sets the db and CORS related configuration
@@ -24,11 +25,11 @@ def create_app(test_config=None):
     @app.route('/')
     def hi():
         return "you are rerouted from auth0 copy the access token from the url"
-    
+
     @app.route('/logout')
     def logout():
         return redirect(f'https://{AUTH0_DOMAIN}/logout')
-    
+
     @app.route('/artists', methods=['GET'])
     @requires_auth('get:artist')
     def artists(jwt):
@@ -182,7 +183,7 @@ def create_app(test_config=None):
             "error": 400,
             "message": "bad request"
         }), 400
-        
+
     @app.errorhandler(AuthError)
     def server_error(error):
         return jsonify({
